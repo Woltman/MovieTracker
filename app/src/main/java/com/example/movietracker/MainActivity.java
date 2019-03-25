@@ -11,11 +11,12 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import Core.IMovieDetail;
 import Core.IMovieList;
 import Core.Movie;
 import Infrastructure.TheMovieDB;
 
-public class MainActivity extends AppCompatActivity implements IMovieList {
+public class MainActivity extends AppCompatActivity implements IMovieList, IMovieDetail {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +31,28 @@ public class MainActivity extends AppCompatActivity implements IMovieList {
 
         TheMovieDB theMovieDB = new TheMovieDB();
         theMovieDB.Discover(this, this);
+
+        //id of how to train your dragon
+        theMovieDB.GetMovieById("166428", this,this);
     }
 
     @Override
     public void OnResponse(ArrayList<Movie> movies) {
         for (Movie movie: movies) {
-            Log.i("movie_title", movie.GetTitle());
+            Log.i("movie_list_title", movie.GetTitle());
+            Log.i("movie_list_imageURL", movie.GetImageUrl());
+            Log.i("movie_list_id", String.valueOf(movie.GetId()));
         }
+    }
+
+    @Override
+    public void OnResponse(Movie movie) {
+        Log.i("movie_detail_title", movie.GetTitle());
+        Log.i("movie_detail_ID", String.valueOf(movie.GetId()));
+        Log.i("movie_detail_imageURL", movie.GetImageUrl());
+
+        TextView tv = findViewById(R.id.Textview);
+        tv.setText(movie.GetTitle());
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import Core.IMovieDetail;
 import Core.IMovieList;
 import Core.Movie;
 
@@ -32,7 +33,7 @@ public class TheMovieDB {
 
     public void Discover(Activity activity, final IMovieList iMovieList){
 
-// Instantiate the RequestQueue.
+        // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = base_url+"/discover/movie?api_key="+api_key;
 
@@ -44,13 +45,9 @@ public class TheMovieDB {
                         try {
                             JSONArray results = response.getJSONArray("results");
 
-                            ArrayList<Movie> movies = new ArrayList<>();
                             MovieFactory movieFactory = new MovieFactory();
 
-                            for(int i = 0; i < results.length(); i++){
-                                JSONObject object = results.getJSONObject(i);
-                                movies.add(movieFactory.buildMovie(object));
-                            }
+                            ArrayList<Movie> movies = movieFactory.buildMovieArray(results);
 
                             iMovieList.OnResponse(movies);
 
@@ -65,6 +62,34 @@ public class TheMovieDB {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         iMovieList.OnErrorResponse(error);
+                    }
+                });
+
+// Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
+    }
+
+    public void GetMovieById(String movie_id, Activity activity, final IMovieDetail iMovieDetail){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(activity);
+        String url = base_url+"/movie/"+movie_id+"?api_key="+api_key;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        MovieFactory movieFactory = new MovieFactory();
+                        Movie movie = movieFactory.buildMovie(response);
+
+                        iMovieDetail.OnResponse(movie);
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        iMovieDetail.OnErrorResponse(error);
                     }
                 });
 
