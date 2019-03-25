@@ -9,9 +9,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField 'String', "ApiKey", MovieTracker_themoviedb_key
     }
     buildTypes {
         release {
+            buildConfigField 'String', "ApiKey", MovieTracker_themoviedb_key
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
