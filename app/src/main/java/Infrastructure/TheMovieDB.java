@@ -65,7 +65,7 @@ public class TheMovieDB {
                     }
                 });
 
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
     }
 
@@ -93,7 +93,44 @@ public class TheMovieDB {
                     }
                 });
 
-// Add the request to the RequestQueue.
+        // Add the request to the RequestQueue.
+        queue.add(jsonObjectRequest);
+    }
+
+    public void Search(String query, Activity activity, final IMovieList iMovieList){
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(activity);
+        String url = base_url+"/search/movie?api_key="+api_key+"&query="+query;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray results = response.getJSONArray("results");
+
+                            MovieFactory movieFactory = new MovieFactory();
+
+                            ArrayList<Movie> movies = movieFactory.buildMovieArray(results);
+
+                            iMovieList.OnResponse(movies);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            iMovieList.OnException(e);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        iMovieList.OnErrorResponse(error);
+                    }
+                });
+
+        // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
     }
 }

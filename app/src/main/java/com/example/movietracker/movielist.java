@@ -24,7 +24,7 @@ import Infrastructure.TheMovieDB;
 
 public class movielist extends Fragment implements IMovieList {
 
-    ListView listView;
+    private MovieAdapter movieAdapter;
 
 //    @Override
 //    public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class movielist extends Fragment implements IMovieList {
 
     @Override
     public void OnResponse(ArrayList<Movie> movies) {
-        final MovieAdapter movieAdapter = new MovieAdapter(getActivity(), R.layout.movie, movies);
+        movieAdapter = new MovieAdapter(getActivity(), R.layout.movie, movies);
 
         ListView listView = (ListView) getActivity().findViewById(R.id.listview);
         listView.setAdapter(movieAdapter);
@@ -63,6 +63,12 @@ public class movielist extends Fragment implements IMovieList {
             }
         };
         listView.setOnItemClickListener(mMessageClickedHandler);
+    }
+
+    public void ChangeList(ArrayList<Movie> movies){
+        movieAdapter.SetMovies(movies);
+        //re render list
+        movieAdapter.notifyDataSetChanged();
     }
 
     @Override

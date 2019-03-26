@@ -1,5 +1,6 @@
 package com.example.movietracker;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -80,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
             Log.i("movie_list_imageURL", movie.GetImageUrl());
             Log.i("movie_list_id", String.valueOf(movie.GetId()));
         }
+
+        movielist ml = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
+        ml.ChangeList(movies);
     }
 
     @Override
@@ -104,11 +108,15 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.tools, menu);
 
+        final Activity activity = this;
+        final IMovieList iMovieList = this;
+
         SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT);
+                TheMovieDB theMovieDB = new TheMovieDB();
+                theMovieDB.Search(query, activity, iMovieList);
                 return true;
             }
 

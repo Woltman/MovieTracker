@@ -1,5 +1,7 @@
 package Infrastructure;
 
+import android.support.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +25,7 @@ public class MovieFactory {
         return movie;
     }
 
+    @Nullable
     //result from api if list is requested is different then single movie
     public ArrayList<Movie> buildMovieArray(JSONArray jsonArray){
         ArrayList<Movie> movies = new ArrayList<>();
@@ -34,7 +37,14 @@ public class MovieFactory {
                 try {
                     movie.SetTitle((String)object.get("title"));
                     movie.SetId((int)object.get("id"));
-                    movie.SetImageUrl((String)object.get("poster_path"));
+                    Object obj = object.get("poster_path");
+                    try {
+                        movie.SetImageUrl((String)obj);
+                    }
+                    catch (Exception e){
+
+                    }
+
                     movies.add(movie);
                 } catch (JSONException e) {
                     e.printStackTrace();
