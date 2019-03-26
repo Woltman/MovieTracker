@@ -1,11 +1,16 @@
 package com.example.movietracker;
 
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 
@@ -20,7 +25,6 @@ import Infrastructure.TheMovieDB;
 
 public class MainActivity extends AppCompatActivity implements IMovieList, IMovieDetail {
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +38,31 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
 
         //id of how to train your dragon
         theMovieDB.GetMovieById("166428", this,this);
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            //handle bottom navigation view item clicks
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                String title = menuItem.getTitle().toString();
+
+                String watchlist = getResources().getString(R.string.watchlist);
+                String movielist = getResources().getString(R.string.movies);
+
+                if(title.equals(watchlist)){
+                    Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
+                }
+                else if(title.equals(movielist)){
+                    Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    return false;
+                }
+
+                return true;
+            }
+        });
     }
 
     @Override
