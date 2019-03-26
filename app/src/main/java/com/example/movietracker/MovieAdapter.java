@@ -21,6 +21,10 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         _movies = movies;
     }
 
+    public void SetMovies(ArrayList<Movie> movies){
+        _movies = movies;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // assign the view we are converting to a local variable

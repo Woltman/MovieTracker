@@ -5,7 +5,7 @@ public class Movie {
 
     private String _title;
     private int _id;
-    private String _imageUrl;
+    private String _imageUrl = "";
 
     public Movie(){
 
