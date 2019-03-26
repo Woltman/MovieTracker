@@ -20,14 +20,14 @@
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1">
 
         <fragment
             android:id="@+id/movielist"
             android:name="com.example.movietracker.movielist"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             tools:layout="@layout/fragment_movielist" />
     </FrameLayout>
 

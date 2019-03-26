@@ -1,7 +1,6 @@
 package com.example.movietracker;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -12,9 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -23,12 +19,13 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import Core.IListItemSelected;
 import Core.IMovieDetail;
 import Core.IMovieList;
 import Core.Movie;
 import Infrastructure.TheMovieDB;
 
-public class MainActivity extends AppCompatActivity implements IMovieList, IMovieDetail {
+public class MainActivity extends AppCompatActivity implements IMovieList, IMovieDetail, IListItemSelected {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         }
 
         movielist ml = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
-        ml.ChangeList(movies);
+        ml.SetList(movies);
     }
 
     @Override
@@ -124,9 +121,18 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if(newText.equals("")){
+                    new TheMovieDB().Discover(activity, iMovieList);
+                    return true;
+                }
                 return false;
             }
         });
         return true;
+    }
+
+    @Override
+    public void onItemSelected(Movie movie) {
+        Toast.makeText(this, movie.GetTitle(), Toast.LENGTH_SHORT).show();
     }
 }
