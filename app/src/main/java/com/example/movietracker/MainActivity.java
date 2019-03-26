@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
@@ -38,8 +39,29 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         //get Api key
         String key = BuildConfig.ApiKey;
 
-        TheMovieDB theMovieDB = new TheMovieDB();
+        final TheMovieDB theMovieDB = new TheMovieDB();
         theMovieDB.Discover(this, this);
+
+
+        movielist ml = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
+        ml.SetOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                //Log.i("scroll", scrollState+" <-- scrollstate");
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                Log.i("first", firstVisibleItem+"");
+                Log.i("visible", visibleItemCount+"");
+                Log.i("total", totalItemCount+"");
+                //if true load new data
+                if(firstVisibleItem + visibleItemCount == totalItemCount){
+                    Log.i("total", "bottom of page!!");
+//                    theMovieDB.Discover(this, this);
+                }
+            }
+        });
 
         //id of how to train your dragon
         theMovieDB.GetMovieById("166428", this,this);

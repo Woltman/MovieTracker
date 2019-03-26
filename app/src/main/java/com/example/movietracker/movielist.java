@@ -4,9 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,7 +25,7 @@ import Core.IMovieList;
 import Core.Movie;
 import Infrastructure.TheMovieDB;
 
-public class movielist extends Fragment implements IMovieList {
+public class movielist extends Fragment {
 
     private MovieAdapter movieAdapter;
     private IListItemSelected iListItemSelected;
@@ -44,9 +46,9 @@ public class movielist extends Fragment implements IMovieList {
         super.onActivityCreated(bundle);
     }
 
-    @Override
-    public void OnResponse(ArrayList<Movie> movies) {
-
+    public void SetOnScrollListener(AbsListView.OnScrollListener onScrollListener){
+        listView = getActivity().findViewById(R.id.listview);
+        listView.setOnScrollListener(onScrollListener);
     }
 
     public void SetList(ArrayList<Movie> movies){
@@ -70,13 +72,8 @@ public class movielist extends Fragment implements IMovieList {
         }
     }
 
-    @Override
-    public void OnException(JSONException e) {
-
-    }
-
-    @Override
-    public void OnErrorResponse(VolleyError error) {
-
+    public void AddMovies(ArrayList<Movie> movies){
+        movieAdapter.AddMovies(movies);
+        movieAdapter.notifyDataSetChanged();
     }
 }

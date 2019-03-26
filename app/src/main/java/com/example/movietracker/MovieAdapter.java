@@ -25,6 +25,10 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
         _movies = movies;
     }
 
+    public void AddMovies(ArrayList<Movie> movies){
+        _movies.addAll(movies);
+    }
+
     public int ItemCount(){
         return _movies.size();
     }
