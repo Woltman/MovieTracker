@@ -61,9 +61,11 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
 
                 if(title.equals(watchlist)){
                     Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
+                    //TODO SWITCH
                 }
                 else if(title.equals(movielist)){
                     Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
+                    //TODO SWITCH
                 }
                 else {
                     return false;
