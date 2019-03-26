@@ -58,7 +58,8 @@ public class movielist extends Fragment implements IMovieList {
 
         AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View v, int position, long id) {
-                String message = String.valueOf(movieAdapter.getItem(position).GetId());
+                String message = "Added to watchlist";
+                //TO DO: Add to watchlist
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             }
         };
