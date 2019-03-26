@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -47,11 +48,15 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             // These TextViews are created in the XML files we defined.
 
             TextView tv = (TextView) v.findViewById(R.id.movie_title);
+            ImageView iv = (ImageView) v.findViewById(R.id.movieposter);
 
             // check to see if each individual textview is null.
             // if not, assign some text!
             if (tv != null){
                 tv.setText(movie.GetTitle());
+            }
+            if (iv != null){
+                new DownloadImageFromInternet(iv, getContext()).execute(movie.GetImageUrl());
             }
         }
 
