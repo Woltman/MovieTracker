@@ -1,11 +1,14 @@
 package Core;
 
+import android.graphics.Bitmap;
+
 public class Movie {
     private static final String imageBaseUrl = "http://image.tmdb.org/t/p/w300";
 
     private String _title;
     private int _id;
     private String _imageUrl = "";
+    public Bitmap poster;
 
     public Movie(){
 
@@ -39,4 +42,8 @@ public class Movie {
     public String GetImageUrl(){
         return _imageUrl;
     }
+
+    public void SetBitMap(Bitmap bitmap) { this.poster = bitmap; }
+
+    public Bitmap GetBitMap() { return this.poster; }
 }

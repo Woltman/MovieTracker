@@ -10,11 +10,15 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 
+import Core.Movie;
+
 public class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
     private ImageView imageView;
+    private Movie movie;
 
-    public DownloadImageFromInternet(ImageView imageView, Context context) {
+    public DownloadImageFromInternet(ImageView imageView, Movie movie) {
         this.imageView = imageView;
+        this.movie = movie;
         //Toast.makeText(context, "Please wait, it may take a few minute...", Toast.LENGTH_SHORT).show();
     }
 
@@ -29,6 +33,7 @@ public class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
             Log.e("Error Message", e.getMessage());
             e.printStackTrace();
         }
+        this.movie.SetBitMap(bimage);
         return bimage;
     }
 

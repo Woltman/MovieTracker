@@ -68,7 +68,7 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                 tv.setText(movie.GetTitle());
             }
             if (iv != null){
-                new DownloadImageFromInternet(iv, getContext()).execute(movie.GetImageUrl());
+                new DownloadImageFromInternet(iv, movie).execute(movie.GetImageUrl());
             }
         }
 

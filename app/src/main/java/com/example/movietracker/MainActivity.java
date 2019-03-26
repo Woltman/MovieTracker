@@ -1,6 +1,7 @@
 package com.example.movietracker;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -80,9 +81,11 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
 
                 if(title.equals(watchlist)){
                     Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
+                    //TODO SWITCH
                 }
                 else if(title.equals(movielist)){
                     Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
+                    //TODO SWITCH
                 }
                 else {
                     return false;
@@ -154,5 +157,8 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
     @Override
     public void onItemSelected(Movie movie) {
         Toast.makeText(this, movie.GetTitle(), Toast.LENGTH_SHORT).show();
+        SavePoster savePoster = new SavePoster(this);
+        Bitmap bimage = movie.GetBitMap();
+        savePoster.SaveImage(bimage, movie.GetTitle());
     }
 }
