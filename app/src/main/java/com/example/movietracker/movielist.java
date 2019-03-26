@@ -18,6 +18,7 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import Core.IListItemSelected;
 import Core.IMovieList;
 import Core.Movie;
 import Infrastructure.TheMovieDB;
@@ -25,50 +26,48 @@ import Infrastructure.TheMovieDB;
 public class movielist extends Fragment implements IMovieList {
 
     private MovieAdapter movieAdapter;
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//    }
+    private IListItemSelected iListItemSelected;
+    private ListView listView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        iListItemSelected = (IListItemSelected)getActivity();
 
-//        listView=(ListView)findViewById(R.id.listview);
+        View v = inflater.inflate(R.layout.fragment_movielist, container, false);
 
-        TheMovieDB theMovieDB = new TheMovieDB();
-        theMovieDB.Discover(getActivity(), this);
+        return v;
+    }
 
-//        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-
-//        listView.setAdapter(arrayAdapter);
-
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_movielist, container, false);
+    @Override
+    public void onActivityCreated(Bundle bundle){
+        super.onActivityCreated(bundle);
     }
 
     @Override
     public void OnResponse(ArrayList<Movie> movies) {
-        movieAdapter = new MovieAdapter(getActivity(), R.layout.movie, movies);
 
-        ListView listView = (ListView) getActivity().findViewById(R.id.listview);
-        listView.setAdapter(movieAdapter);
-
-        AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                String message = String.valueOf(movieAdapter.getItem(position).GetId());
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-            }
-        };
-        listView.setOnItemClickListener(mMessageClickedHandler);
     }
 
-    public void ChangeList(ArrayList<Movie> movies){
-        movieAdapter.SetMovies(movies);
-        //re render list
-        movieAdapter.notifyDataSetChanged();
+    public void SetList(ArrayList<Movie> movies){
+        if(movieAdapter == null || movieAdapter.ItemCount() < movies.size()){
+            movieAdapter = new MovieAdapter(getActivity(), R.layout.movie, new ArrayList<Movie>(movies));
+
+            listView = getActivity().findViewById(R.id.listview);
+            listView.setAdapter(movieAdapter);
+
+            AdapterView.OnItemClickListener mMessageClickedHandler = new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView parent, View v, int position, long id) {
+                    //String message = String.valueOf(movieAdapter.getItem(position).GetId());
+                    iListItemSelected.onItemSelected(movieAdapter.getItem(position));
+                }
+            };
+            listView.setOnItemClickListener(mMessageClickedHandler);
+        }
+        else{
+            movieAdapter.SetMovies(movies);
+            movieAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

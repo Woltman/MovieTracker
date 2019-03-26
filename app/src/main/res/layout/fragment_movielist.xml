@@ -6,8 +6,9 @@
     tools:context=".movielist">
 
     <ListView
-    android:id="@+id/listview"
-    android:layout_width="match_parent"
-    android:layout_height="660dp" />
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
 
 </FrameLayout>
