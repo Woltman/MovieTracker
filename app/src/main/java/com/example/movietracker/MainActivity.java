@@ -1,6 +1,7 @@
 package com.example.movietracker;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -134,5 +135,8 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
     @Override
     public void onItemSelected(Movie movie) {
         Toast.makeText(this, movie.GetTitle(), Toast.LENGTH_SHORT).show();
+        SavePoster savePoster = new SavePoster(this);
+        Bitmap bimage = movie.GetBitMap();
+        savePoster.SaveImage(bimage, movie.GetTitle());
     }
 }

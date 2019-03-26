@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Random;
 
-public class SavePoster extends AsyncTask<Bitmap, Void, Void> {
+public class SavePoster {
 
     private final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
@@ -44,30 +44,24 @@ public class SavePoster extends AsyncTask<Bitmap, Void, Void> {
         }
     }
 
-    @Override
-    protected Void doInBackground(Bitmap... bitmap) {
-        Bitmap finalBitmap = bitmap[0];
+    public void SaveImage(Bitmap bitmap, String title) {
         String root = Environment.getExternalStorageDirectory().toString();
         File myDir = new File(root + "/saved_images");
         if (!myDir.exists()) {
             myDir.mkdirs();
         }
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
-        String fname = "Image-"+ n +".jpg";
+        String fname = "Image-"+ title +".jpg";
         File file = new File (myDir, fname);
         if (file.exists ())
             file.delete ();
         try {
             FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
             out.flush();
             out.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
 }
