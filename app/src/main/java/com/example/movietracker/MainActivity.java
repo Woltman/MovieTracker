@@ -5,7 +5,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -30,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setSupportActionBar((Toolbar)findViewById(R.id.my_toolbar));
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
         //get Api key
         String key = BuildConfig.ApiKey;
 
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 String title = menuItem.getTitle().toString();
 
+                //get string values from strings.xml
                 String watchlist = getResources().getString(R.string.watchlist);
                 String movielist = getResources().getString(R.string.movies);
 
@@ -89,5 +97,26 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
     @Override
     public void OnErrorResponse(VolleyError error) {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.tools, menu);
+
+        SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getApplicationContext(), query, Toast.LENGTH_SHORT);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return true;
     }
 }
