@@ -23,7 +23,7 @@ import Core.IMovieList;
 import Core.Movie;
 import Infrastructure.TheMovieDB;
 
-public class movielist extends Fragment implements IMovieList {
+public class MovieList extends Fragment implements IMovieList {
 
     private MovieAdapter movieAdapter;
     private IListItemSelected iListItemSelected;

@@ -28,6 +28,8 @@ import Infrastructure.TheMovieDB;
 
 public class MainActivity extends AppCompatActivity implements IMovieList, IMovieDetail, IListItemSelected {
 
+    private WatchList watchlist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         //get Api key
         String key = BuildConfig.ApiKey;
 
+        watchlist = new WatchList();
         TheMovieDB theMovieDB = new TheMovieDB();
         theMovieDB.Discover(this, this);
 
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
             Log.i("movie_list_id", String.valueOf(movie.GetId()));
         }
 
-        movielist ml = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
+        MovieList ml = (MovieList)getSupportFragmentManager().findFragmentById(R.id.movielist);
         ml.SetList(movies);
     }
 
@@ -134,7 +137,10 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
 
     @Override
     public void onItemSelected(Movie movie) {
-        Toast.makeText(this, movie.GetTitle(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
+        watchlist.addToWatchlist(movie);
+
+        //TODO Move this to detail page
         SavePoster savePoster = new SavePoster(this);
         Bitmap bimage = movie.GetBitMap();
         savePoster.SaveImage(bimage, movie.GetTitle());

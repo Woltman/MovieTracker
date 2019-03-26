@@ -25,7 +25,7 @@
 
         <fragment
             android:id="@+id/movielist"
-            android:name="com.example.movietracker.movielist"
+            android:name="com.example.movietracker.MovieList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout="@layout/fragment_movielist" />
