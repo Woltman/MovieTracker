@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         Log.i("movie_detail_title", movie.GetTitle());
         Log.i("movie_detail_ID", String.valueOf(movie.GetId()));
         Log.i("movie_detail_imageURL", movie.GetImageUrl());
-
-        TextView tv = findViewById(R.id.Textview);
-        tv.setText(movie.GetTitle());
     }
 
     @Override
