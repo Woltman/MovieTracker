@@ -2,23 +2,33 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <fragment
-        android:id="@+id/movielist"
-        android:name="com.example.movietracker.movielist"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:id="@+id/content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
 
+        <fragment
+            android:id="@+id/movielist"
+            android:name="com.example.movietracker.movielist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_movielist" />
     </FrameLayout>
 
     <android.support.design.widget.BottomNavigationView
@@ -31,14 +41,7 @@
 
     </android.support.design.widget.BottomNavigationView>
 
+
 </LinearLayout>
 
 
-<!--<android.support.v7.widget.Toolbar-->
-<!--android:id="@+id/my_toolbar"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="?attr/actionBarSize"-->
-<!--android:background="@color/colorPrimary"-->
-<!--android:elevation="4dp"-->
-<!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-<!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
