@@ -1,6 +1,7 @@
 package com.example.movietracker;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,12 +16,15 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 
 import Core.IListItemSelected;
 import Core.Movie;
 import Core.MovieListResponse;
 import Infrastructure.TheMovieDB;
+import Infrastructure.WatchlistStorage;
 
 public class MainActivity extends AppCompatActivity implements IListItemSelected {
     private TheMovieDB theMovieDB;
@@ -32,7 +36,8 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     private ArrayList<Movie> discoverMovies = new ArrayList<>();
     private String lastQuery = "";
 
-    private WatchList watchlist;
+    private WatchlistStorage watchlistStorage;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         theMovieDB = new TheMovieDB();
+        watchlistStorage = new WatchlistStorage();
+        sharedPreferences = getSharedPreferences("shared prefernces", MODE_PRIVATE);
         movielistFragment = (MovieList) getSupportFragmentManager().findFragmentById(R.id.movielist);
 
         theMovieDB.Discover(this, page, new MovieListResponse() {
@@ -52,10 +59,9 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
             }
         });
 
+        watchlistStorage.loadData(sharedPreferences);
 
         final Activity activity = this;
-
-        watchlist = new WatchList();
 
         movielistFragment.SetOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -166,7 +172,8 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     @Override
     public void onItemSelected(Movie movie) {
         Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
-        //watchlist.addToWatchlist(this, movie));
+        watchlistStorage.addToWatchlist(movie, sharedPreferences);
+        //watchlistStorage.loadData(sharedPreferences);
 
         //TODO Move this to detail page
         SavePoster savePoster = new SavePoster(this);
