@@ -8,7 +8,8 @@ public class Movie {
     private String _title;
     private int _id;
     private String _imageUrl = "";
-    public Bitmap poster;
+    private Bitmap poster;
+    private String _summmary;
 
     public Movie(){
 
@@ -46,4 +47,12 @@ public class Movie {
     public void SetBitMap(Bitmap bitmap) { this.poster = bitmap; }
 
     public Bitmap GetBitMap() { return this.poster; }
+
+    public String getSummary() {
+        return _summmary;
+    }
+
+    public void setSummary(String summmary) {
+        this._summmary = summmary;
+    }
 }

@@ -1,9 +1,12 @@
 package com.example.movietracker;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     private String lastQuery = "";
 
     private WatchList watchlist;
+
+    public static final String ID_MESSAGE = "id_message";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,9 +173,29 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
         //watchlist.addToWatchlist(this, movie));
 
+        Intent intent = new Intent(this, DetailActivity.class);
+
+        String id = String.valueOf(movie.GetId());
+        intent.putExtra(ID_MESSAGE, id);
+        startActivity(intent);
+
         //TODO Move this to detail page
-        SavePoster savePoster = new SavePoster(this);
-        Bitmap bimage = movie.GetBitMap();
-        savePoster.SaveImage(bimage, movie.GetTitle());
+//        SavePoster savePoster = new SavePoster(this);
+//        Bitmap bimage = movie.GetBitMap();
+//        savePoster.SaveImage(bimage, movie.GetTitle());
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Really Exit?")
+                .setMessage("Are you sure you want to exit?")
+                .setNegativeButton(android.R.string.no, null)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        MainActivity.super.onBackPressed();
+                    }
+                }).create().show();
     }
 }

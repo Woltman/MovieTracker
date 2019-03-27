@@ -41,7 +41,7 @@ public class MovieList extends Fragment {
     }
 
     public void SetList(ArrayList<Movie> movies){
-        if(movieAdapter == null || movieAdapter.ItemCount() != movies.size()){
+
             movieAdapter = new MovieAdapter(getActivity(), R.layout.movie, new ArrayList<Movie>(movies));
 
             listView = getActivity().findViewById(R.id.listview);
@@ -54,11 +54,7 @@ public class MovieList extends Fragment {
                 }
             };
             listView.setOnItemClickListener(mMessageClickedHandler);
-        }
-        else{
-            movieAdapter.SetMovies(movies);
-            movieAdapter.notifyDataSetChanged();
-        }
+
     }
 
     public void AddMovies(ArrayList<Movie> movies){

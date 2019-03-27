@@ -16,8 +16,12 @@ public class MovieFactory {
         try {
             movie.SetTitle((String)jsonObject.get("title"));
             movie.SetId((int)jsonObject.get("id"));
-            JSONObject obj = (JSONObject)jsonObject.get("belongs_to_collection");
-            movie.SetImageUrl((String)obj.get("poster_path"));
+            Object poster = jsonObject.get("poster_path");
+            if(!poster.equals(null)){
+                movie.SetImageUrl((String)jsonObject.get("poster_path"));
+            }
+
+            movie.setSummary((String)jsonObject.get("overview"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

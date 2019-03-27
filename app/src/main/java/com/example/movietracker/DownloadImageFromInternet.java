@@ -24,6 +24,9 @@ public class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
 
     protected Bitmap doInBackground(String... urls) {
         String imageURL = urls[0];
+        if(imageURL == ""){
+            return null;
+        }
         Bitmap bimage = null;
         try {
             InputStream in = new java.net.URL(imageURL).openStream();
@@ -38,6 +41,7 @@ public class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
+        if(result == null) return;
         imageView.setImageBitmap(result);
     }
 }
