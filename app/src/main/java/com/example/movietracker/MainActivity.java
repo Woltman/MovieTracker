@@ -15,19 +15,22 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 import Core.IListItemSelected;
-import Core.IMovieDetail;
-import Core.IMovieList;
 import Core.Movie;
+import Core.MovieListResponse;
 import Infrastructure.TheMovieDB;
 
-public class MainActivity extends AppCompatActivity implements IMovieList, IMovieDetail, IListItemSelected {
+public class MainActivity extends AppCompatActivity implements IListItemSelected {
+    private TheMovieDB theMovieDB;
+    private movielist movielistFragment;
+    private int page = 1;
+    private final int moviesPerPage = 20;
+    private boolean isLoadingNewMovies = false;
+    private boolean isInDiscoverMode = true;
+    private ArrayList<Movie> discoverMovies = new ArrayList<>();
+    private String lastQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,35 +40,53 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
         setSupportActionBar((Toolbar)findViewById(R.id.my_toolbar));
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        //get Api key
-        String key = BuildConfig.ApiKey;
+        theMovieDB = new TheMovieDB();
+        movielistFragment = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
 
-        final TheMovieDB theMovieDB = new TheMovieDB();
-        theMovieDB.Discover(this, this);
+        theMovieDB.Discover(this, page, new MovieListResponse() {
+            @Override
+            public void onResponse(ArrayList<Movie> movies) {
+                movielistFragment.SetList(movies);
+            }
+        });
 
+        final Activity activity = this;
 
-        movielist ml = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
-        ml.SetOnScrollListener(new AbsListView.OnScrollListener() {
+        movielistFragment.SetOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                //Log.i("scroll", scrollState+" <-- scrollstate");
+
             }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                Log.i("first", firstVisibleItem+"");
-                Log.i("visible", visibleItemCount+"");
-                Log.i("total", totalItemCount+"");
+                Log.i("scrolling firstitem", firstVisibleItem+"");
+                Log.i("scrolling visibleitem", visibleItemCount+"");
+                Log.i("scrolling totalitem", totalItemCount+"");
+
                 //if true load new data
-                if(firstVisibleItem + visibleItemCount == totalItemCount){
+                if(firstVisibleItem + visibleItemCount == totalItemCount && !isLoadingNewMovies && totalItemCount > 0){
+                    isLoadingNewMovies = true;
                     Log.i("total", "bottom of page!!");
-//                    theMovieDB.Discover(this, this);
+
+                    page+=1;
+                    Log.i("page number", page+"");
+
+                    if(isInDiscoverMode){
+                        theMovieDB.Discover(activity, page, new MovieListResponse() {
+                            @Override
+                            public void onResponse(ArrayList<Movie> movies) {
+                                movielistFragment.AddMovies(movies);
+                                isLoadingNewMovies = false;
+                            }
+                        });
+                    }
+                    else{
+                        isLoadingNewMovies = false;
+                    }
                 }
             }
         });
-
-        //id of how to train your dragon
-        theMovieDB.GetMovieById("166428", this,this);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
 
@@ -97,55 +118,38 @@ public class MainActivity extends AppCompatActivity implements IMovieList, IMovi
     }
 
     @Override
-    public void OnResponse(ArrayList<Movie> movies) {
-        for (Movie movie: movies) {
-            Log.i("movie_list_title", movie.GetTitle());
-            Log.i("movie_list_imageURL", movie.GetImageUrl());
-            Log.i("movie_list_id", String.valueOf(movie.GetId()));
-        }
-
-        movielist ml = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
-        ml.SetList(movies);
-    }
-
-    @Override
-    public void OnResponse(Movie movie) {
-        Log.i("movie_detail_title", movie.GetTitle());
-        Log.i("movie_detail_ID", String.valueOf(movie.GetId()));
-        Log.i("movie_detail_imageURL", movie.GetImageUrl());
-    }
-
-    @Override
-    public void OnException(JSONException e) {
-
-    }
-
-    @Override
-    public void OnErrorResponse(VolleyError error) {
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.tools, menu);
 
         final Activity activity = this;
-        final IMovieList iMovieList = this;
 
         SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                TheMovieDB theMovieDB = new TheMovieDB();
-                theMovieDB.Search(query, activity, iMovieList);
+            public boolean onQueryTextSubmit(final String query) {
+                page = 1;
+                theMovieDB.Search(query, page, activity, new MovieListResponse() {
+                    @Override
+                    public void onResponse(ArrayList<Movie> movies) {
+                        lastQuery = query;
+                        if(isInDiscoverMode){
+                            discoverMovies = movielistFragment.getMovies();
+                            isInDiscoverMode = false;
+                        }
+                        page = 1;
+                        movielistFragment.SetList(movies);
+                    }
+                });
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(newText.equals("")){
-                    new TheMovieDB().Discover(activity, iMovieList);
+                    isInDiscoverMode = true;
+                    movielistFragment.SetList(discoverMovies);
+                    page = discoverMovies.size() / moviesPerPage;
                     return true;
                 }
                 return false;

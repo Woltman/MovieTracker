@@ -1,35 +1,25 @@
 package com.example.movietracker;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.android.volley.VolleyError;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 
 import Core.IListItemSelected;
-import Core.IMovieList;
 import Core.Movie;
-import Infrastructure.TheMovieDB;
 
 public class movielist extends Fragment {
 
     private MovieAdapter movieAdapter;
     private IListItemSelected iListItemSelected;
     private ListView listView;
+    private int page;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +42,7 @@ public class movielist extends Fragment {
     }
 
     public void SetList(ArrayList<Movie> movies){
-        if(movieAdapter == null || movieAdapter.ItemCount() < movies.size()){
+        if(movieAdapter == null || movieAdapter.ItemCount() != movies.size()){
             movieAdapter = new MovieAdapter(getActivity(), R.layout.movie, new ArrayList<Movie>(movies));
 
             listView = getActivity().findViewById(R.id.listview);
@@ -75,5 +65,9 @@ public class movielist extends Fragment {
     public void AddMovies(ArrayList<Movie> movies){
         movieAdapter.AddMovies(movies);
         movieAdapter.notifyDataSetChanged();
+    }
+
+    public ArrayList<Movie> getMovies(){
+        return movieAdapter.getMovies();
     }
 }
