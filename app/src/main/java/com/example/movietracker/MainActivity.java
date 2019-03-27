@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
             }
         });
 
-        watchlistStorage.loadData(sharedPreferences);
+        //watchlistStorage.loadData(sharedPreferences);
 
         final Activity activity = this;
 
@@ -117,10 +118,15 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
 
                 if(title.equals(watchlist)){
                     Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
-                    //TODO SWITCH
+                    findViewById(R.id.search).setVisibility(View.GONE);
+                    discoverMovies = movielistFragment.getMovies();
+                    movielistFragment.SetList(new ArrayList<Movie>());
+                    //TODO LOAD WatchList arraylist<Movie> into SetList
                 }
                 else if(title.equals(movielist)){
                     Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
+                    findViewById(R.id.search).setVisibility(View.VISIBLE);
+                    movielistFragment.SetList(discoverMovies);
                     //TODO SWITCH
                 }
                 else {
@@ -176,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     @Override
     public void onItemSelected(Movie movie) {
         Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
-        watchlistStorage.addToWatchlist(movie, sharedPreferences);
+        //watchlistStorage.addToWatchlist(movie, sharedPreferences);
         //watchlistStorage.loadData(sharedPreferences);
 
         Intent intent = new Intent(this, DetailActivity.class);
