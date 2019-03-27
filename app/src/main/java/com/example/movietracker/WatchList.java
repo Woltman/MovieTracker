@@ -24,15 +24,4 @@ public class WatchList extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_watchlist, container, false);
     }
-
-    public File addToWatchlist(Context context, String url) {
-        File file = null;
-        try {
-            String fileName = Uri.parse(url).getLastPathSegment();
-            file = File.createTempFile(fileName, null, context.getCacheDir());
-        } catch (IOException e) {
-            // Error while creating file
-        }
-        return file;
-    }
 }
