@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class watchlist extends Fragment {
+import java.io.File;
+import java.io.IOException;
+
+public class WatchList extends Fragment {
 
 //    @Override
 //    public void onCreate(Bundle savedInstanceState) {
@@ -22,4 +25,14 @@ public class watchlist extends Fragment {
         return inflater.inflate(R.layout.fragment_watchlist, container, false);
     }
 
+    public File addToWatchlist(Context context, String url) {
+        File file = null;
+        try {
+            String fileName = Uri.parse(url).getLastPathSegment();
+            file = File.createTempFile(fileName, null, context.getCacheDir());
+        } catch (IOException e) {
+            // Error while creating file
+        }
+        return file;
+    }
 }

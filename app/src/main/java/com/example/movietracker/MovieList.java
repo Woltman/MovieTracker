@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import Core.IListItemSelected;
 import Core.Movie;
 
-public class movielist extends Fragment {
-
+public class MovieList extends Fragment {
     private MovieAdapter movieAdapter;
     private IListItemSelected iListItemSelected;
     private ListView listView;

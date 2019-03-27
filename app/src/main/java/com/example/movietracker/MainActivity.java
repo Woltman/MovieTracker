@@ -24,13 +24,15 @@ import Infrastructure.TheMovieDB;
 
 public class MainActivity extends AppCompatActivity implements IListItemSelected {
     private TheMovieDB theMovieDB;
-    private movielist movielistFragment;
+    private MovieList movielistFragment;
     private int page = 1;
     private final int moviesPerPage = 20;
     private boolean isLoadingNewMovies = false;
     private boolean isInDiscoverMode = true;
     private ArrayList<Movie> discoverMovies = new ArrayList<>();
     private String lastQuery = "";
+
+    private WatchList watchlist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         theMovieDB = new TheMovieDB();
-        movielistFragment = (movielist)getSupportFragmentManager().findFragmentById(R.id.movielist);
+        movielistFragment = (MovieList) getSupportFragmentManager().findFragmentById(R.id.movielist);
 
         theMovieDB.Discover(this, page, new MovieListResponse() {
             @Override
@@ -50,7 +52,10 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
             }
         });
 
+
         final Activity activity = this;
+
+        watchlist = new WatchList();
 
         movielistFragment.SetOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -160,7 +165,10 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
 
     @Override
     public void onItemSelected(Movie movie) {
-        Toast.makeText(this, movie.GetTitle(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
+        //watchlist.addToWatchlist(this, movie));
+
+        //TODO Move this to detail page
         SavePoster savePoster = new SavePoster(this);
         Bitmap bimage = movie.GetBitMap();
         savePoster.SaveImage(bimage, movie.GetTitle());
