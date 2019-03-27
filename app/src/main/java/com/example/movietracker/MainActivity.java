@@ -57,14 +57,14 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         sharedPreferences = getSharedPreferences("shared prefernces", MODE_PRIVATE);
         movielistFragment = (MovieList) getSupportFragmentManager().findFragmentById(R.id.movielist);
 
+        //watchlistStorage.loadData(sharedPreferences);
+
         theMovieDB.Discover(this, page, new MovieListResponse() {
             @Override
             public void onResponse(ArrayList<Movie> movies) {
                 movielistFragment.SetList(movies);
             }
         });
-
-        //watchlistStorage.loadData(sharedPreferences);
 
         final Activity activity = this;
 
@@ -182,9 +182,14 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     @Override
     public void onItemSelected(Movie movie) {
         Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
+
         //watchlistStorage.addToWatchlist(movie, sharedPreferences);
         //watchlistStorage.loadData(sharedPreferences);
 
+        //watchlistStorage.addToWatchlist(movie, sharedPreferences);
+
+
+        //TODO UITCOMMENT
         Intent intent = new Intent(this, DetailActivity.class);
 
         String id = String.valueOf(movie.GetId());
