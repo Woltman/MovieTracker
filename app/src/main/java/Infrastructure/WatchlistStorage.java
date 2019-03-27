@@ -13,27 +13,32 @@ import Core.Movie;
 
 
 public class WatchlistStorage {
-    ArrayList<Movie> watchList;
+    ArrayList<Movie> watchList = new ArrayList<Movie>();
 
     public void addToWatchlist(Movie movie, SharedPreferences sharedPreferences) {
-        watchList = new ArrayList<Movie>();
-        watchList.add(movie);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(watchList);
-        editor.putString("task list", json);
-        editor.apply();
-        loadData(sharedPreferences);
+        if (!watchList.contains(movie)) {
+            watchList.add(movie);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(watchList);
+            editor.putString("Movies", json);
+            editor.apply();
+        }
     }
 
-    public void loadData(SharedPreferences sharedPreferences) {
+    public ArrayList<Movie> loadData(SharedPreferences sharedPreferences) {
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("task list", null);
+        String json = sharedPreferences.getString("Movies", null);
         Type type = new TypeToken<ArrayList<Movie>>() {}.getType();
         watchList = gson.fromJson(json, type);
 
         if (watchList == null) {
             watchList = new ArrayList<Movie>();
         }
+        return watchList;
+    }
+
+    public ArrayList<Movie> getList() {
+        return watchList;
     }
 }

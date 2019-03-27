@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         sharedPreferences = getSharedPreferences("shared prefernces", MODE_PRIVATE);
         movielistFragment = (MovieList) getSupportFragmentManager().findFragmentById(R.id.movielist);
 
-        //watchlistStorage.loadData(sharedPreferences);
+        //TODO UITCOMMENTEN
+        watchlistStorage.loadData(sharedPreferences);
 
         theMovieDB.Discover(this, page, new MovieListResponse() {
             @Override
@@ -117,13 +118,15 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                 String movielist = getResources().getString(R.string.movies);
 
                 if(title.equals(watchlist)){
+                    isInDiscoverMode = false;
                     Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
                     findViewById(R.id.search).setVisibility(View.GONE);
                     discoverMovies = movielistFragment.getMovies();
-                    movielistFragment.SetList(new ArrayList<Movie>());
+                    movielistFragment.SetList(watchlistStorage.getList());
                     //TODO LOAD WatchList arraylist<Movie> into SetList
                 }
                 else if(title.equals(movielist)){
+                    isInDiscoverMode = true;
                     Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
                     findViewById(R.id.search).setVisibility(View.VISIBLE);
                     movielistFragment.SetList(discoverMovies);
@@ -183,20 +186,16 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     public void onItemSelected(Movie movie) {
         Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
 
-        //watchlistStorage.addToWatchlist(movie, sharedPreferences);
-        //watchlistStorage.loadData(sharedPreferences);
-
-        //watchlistStorage.addToWatchlist(movie, sharedPreferences);
-
-
-        //TODO UITCOMMENT
         Intent intent = new Intent(this, DetailActivity.class);
 
         String id = String.valueOf(movie.GetId());
         intent.putExtra(ID_MESSAGE, id);
         startActivity(intent);
 
-        //TODO Move this to detail page
+        //TODO Move to detail page addtowatchlist button
+//      watchlistStorage.addToWatchlist(movie, sharedPreferences);
+
+        //TODO Move to detail page saveposter button
 //        SavePoster savePoster = new SavePoster(this);
 //        Bitmap bimage = movie.GetBitMap();
 //        savePoster.SaveImage(bimage, movie.GetTitle());
