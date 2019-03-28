@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,16 +40,16 @@ public class SavePoster {
         }
         String fname = "Image-"+ title +".jpg";
         File file = new File (myDir, fname);
-        if (file.exists ())
-            file.delete ();
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
+        if (!file.exists()) {
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+                out.flush();
+                out.close();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
