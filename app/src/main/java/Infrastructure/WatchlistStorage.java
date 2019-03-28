@@ -13,20 +13,25 @@ import Core.Movie;
 
 
 public class WatchlistStorage {
-    ArrayList<Movie> watchList = new ArrayList<Movie>();
+    private static ArrayList<Movie> watchList = new ArrayList<Movie>();
+    private static WatchlistStorage _instance;
+    private static ArrayList<IWatchListObserver> _observers = new ArrayList<>();
 
-    public void addToWatchlist(Movie movie, SharedPreferences sharedPreferences) {
-        if (!watchList.contains(movie)) {
-            watchList.add(movie);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            Gson gson = new Gson();
-            String json = gson.toJson(watchList);
-            editor.putString("Movies", json);
-            editor.apply();
+    public static void addToWatchlist(Movie movie, SharedPreferences sharedPreferences) {
+        for (Movie m: watchList) {
+            if(m.GetTitle().equals(movie.GetTitle())){ return; }
         }
+
+        watchList.add(movie);
+        notifyObservers();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(watchList);
+        editor.putString("Movies", json);
+        editor.apply();
     }
 
-    public ArrayList<Movie> loadData(SharedPreferences sharedPreferences) {
+    public static ArrayList<Movie> loadData(SharedPreferences sharedPreferences) {
         Gson gson = new Gson();
         String json = sharedPreferences.getString("Movies", null);
         Type type = new TypeToken<ArrayList<Movie>>() {}.getType();
@@ -38,7 +43,43 @@ public class WatchlistStorage {
         return watchList;
     }
 
-    public ArrayList<Movie> getList() {
+    public static void removeFromWatchlist(Movie movie, SharedPreferences sharedPreferences) {
+        for (Movie m: watchList) {
+            if(m.GetTitle().equals(movie.GetTitle())) {
+                watchList.remove(m);
+                notifyObservers();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                Gson gson = new Gson();
+                String json = gson.toJson(watchList);
+                editor.putString("Movies", json);
+                editor.apply();
+                return;
+            }
+        }
+    }
+
+    public static ArrayList<Movie> getList() {
         return watchList;
+    }
+
+    public static WatchlistStorage getInstance(){
+        if(_instance == null){
+            _instance = new WatchlistStorage();
+        }
+        return _instance;
+    }
+
+    private static void notifyObservers(){
+        for (IWatchListObserver observer: _observers) {
+            observer.watchListChanged(watchList);
+        }
+    }
+
+    public static void observeList(IWatchListObserver iWatchListObserver){
+        _observers.add(iWatchListObserver);
+    }
+
+    public interface IWatchListObserver{
+        void watchListChanged(ArrayList<Movie> movies);
     }
 }

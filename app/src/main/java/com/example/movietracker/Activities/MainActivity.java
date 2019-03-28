@@ -1,10 +1,9 @@
-package com.example.movietracker;
+package com.example.movietracker.Activities;
 
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
@@ -20,6 +19,9 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Toast;
 
+
+import com.example.movietracker.Fragments.MovieList;
+import com.example.movietracker.R;
 
 import java.util.ArrayList;
 
@@ -118,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                 String movielist = getResources().getString(R.string.movies);
 
                 if(title.equals(watchlist)){
-                    Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
                     findViewById(R.id.search).setVisibility(View.GONE);
                     if(isInDiscoverMode){
                         discoverMovies = movielistFragment.getMovies();
@@ -129,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                     isInDiscoverMode = false;
                     movielistFragment.SetList(WatchlistStorage.getList());
 
-                    //TODO LOAD WatchList arraylist<Movie> into SetList
                 }
                 else if(title.equals(movielist)){
                     if(!lastQuery.equals("")){
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                         movielistFragment.SetList(discoverMovies);
                     }
                     findViewById(R.id.search).setVisibility(View.VISIBLE);
-                    Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     return false;

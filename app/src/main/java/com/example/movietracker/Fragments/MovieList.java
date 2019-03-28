@@ -1,4 +1,4 @@
-package com.example.movietracker;
+package com.example.movietracker.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import com.example.movietracker.MovieAdapter;
+import com.example.movietracker.R;
 
 import java.util.ArrayList;
 
