@@ -29,7 +29,7 @@ import Core.MovieListResponse;
 import Infrastructure.TheMovieDB;
 import Infrastructure.WatchlistStorage;
 
-public class MainActivity extends AppCompatActivity implements IListItemSelected {
+public class MainActivity extends AppCompatActivity implements IListItemSelected, WatchlistStorage.IWatchListObserver {
     private TheMovieDB theMovieDB;
     private MovieList movielistFragment;
     private int page = 1;
@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     private boolean isLoadingNewMovies = false;
     private boolean isInDiscoverMode = true;
     private ArrayList<Movie> discoverMovies = new ArrayList<>();
+    private ArrayList<Movie> searchMovies = new ArrayList<>();
     private String lastQuery = "";
 
-    private WatchlistStorage watchlistStorage;
     private SharedPreferences sharedPreferences;
 
     public static final String ID_MESSAGE = "id_message";
@@ -53,12 +53,12 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         theMovieDB = new TheMovieDB();
-        watchlistStorage = new WatchlistStorage();
+
         sharedPreferences = getSharedPreferences("shared prefernces", MODE_PRIVATE);
         movielistFragment = (MovieList) getSupportFragmentManager().findFragmentById(R.id.movielist);
 
-        //TODO UITCOMMENTEN
-        watchlistStorage.loadData(sharedPreferences);
+        WatchlistStorage.loadData(sharedPreferences);
+        WatchlistStorage.observeList(this);
 
         theMovieDB.Discover(this, page, new MovieListResponse() {
             @Override
@@ -118,19 +118,30 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                 String movielist = getResources().getString(R.string.movies);
 
                 if(title.equals(watchlist)){
-                    isInDiscoverMode = false;
                     Toast.makeText(getApplicationContext(), watchlist, Toast.LENGTH_SHORT).show();
                     findViewById(R.id.search).setVisibility(View.GONE);
-                    discoverMovies = movielistFragment.getMovies();
-                    movielistFragment.SetList(watchlistStorage.getList());
+                    if(isInDiscoverMode){
+                        discoverMovies = movielistFragment.getMovies();
+                    }
+                    else{
+                        searchMovies = movielistFragment.getMovies();
+                    }
+                    isInDiscoverMode = false;
+                    movielistFragment.SetList(WatchlistStorage.getList());
+
                     //TODO LOAD WatchList arraylist<Movie> into SetList
                 }
                 else if(title.equals(movielist)){
-                    isInDiscoverMode = true;
-                    Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
+                    if(!lastQuery.equals("")){
+                        movielistFragment.SetList(searchMovies);
+                        isInDiscoverMode = false;
+                    }
+                    else{
+                        isInDiscoverMode = true;
+                        movielistFragment.SetList(discoverMovies);
+                    }
                     findViewById(R.id.search).setVisibility(View.VISIBLE);
-                    movielistFragment.SetList(discoverMovies);
-                    //TODO SWITCH
+                    Toast.makeText(getApplicationContext(), movielist, Toast.LENGTH_SHORT).show();
                 }
                 else {
                     return false;
@@ -171,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
             @Override
             public boolean onQueryTextChange(String newText) {
                 if(newText.equals("")){
+                    lastQuery = newText;
                     isInDiscoverMode = true;
                     movielistFragment.SetList(discoverMovies);
                     page = discoverMovies.size() / moviesPerPage;
@@ -184,8 +196,6 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
 
     @Override
     public void onItemSelected(Movie movie) {
-        Toast.makeText(this, "Added " + movie.GetTitle() + " to WatchList", Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(this, DetailActivity.class);
 
         String id = String.valueOf(movie.GetId());
@@ -213,5 +223,13 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                         MainActivity.super.onBackPressed();
                     }
                 }).create().show();
+    }
+
+    @Override
+    public void watchListChanged(ArrayList<Movie> movies) {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+        if(bottomNavigationView.getSelectedItemId() == R.id.navigation_schedule){
+            movielistFragment.SetList(WatchlistStorage.getList());
+        }
     }
 }
