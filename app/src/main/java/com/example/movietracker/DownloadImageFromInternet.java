@@ -36,7 +36,7 @@ public class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
             Log.e("Error Message", e.getMessage());
             e.printStackTrace();
         }
-        this.movie.SetBitMap(bimage);
+        //this.movie.SetBitMap(bimage);
         return bimage;
     }
 

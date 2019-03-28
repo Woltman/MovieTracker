@@ -1,8 +1,10 @@
 package Core;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Movie {
+public class Movie implements Parcelable {
     private static final String imageBaseUrl = "http://image.tmdb.org/t/p/w300";
 
     private String _title;
@@ -19,6 +21,26 @@ public class Movie {
         _title = title;
         _id = id;
     }
+
+    protected Movie(Parcel in) {
+        _title = in.readString();
+        _id = in.readInt();
+        _imageUrl = in.readString();
+        poster = in.readParcelable(Bitmap.class.getClassLoader());
+        _summmary = in.readString();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public void SetTitle(String title){
         _title = title;
@@ -54,5 +76,19 @@ public class Movie {
 
     public void setSummary(String summmary) {
         this._summmary = summmary;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_title);
+        dest.writeInt(_id);
+        dest.writeString(_imageUrl);
+        dest.writeParcelable(poster, flags);
+        dest.writeString(_summmary);
     }
 }

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     private final int moviesPerPage = 20;
     private boolean isLoadingNewMovies = false;
     private boolean isInDiscoverMode = true;
+    private boolean isInWatchList = false;
     private ArrayList<Movie> discoverMovies = new ArrayList<>();
     private ArrayList<Movie> searchMovies = new ArrayList<>();
     private String lastQuery = "";
@@ -62,12 +63,32 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         WatchlistStorage.loadData(sharedPreferences);
         WatchlistStorage.observeList(this);
 
-        theMovieDB.Discover(this, page, new MovieListResponse() {
-            @Override
-            public void onResponse(ArrayList<Movie> movies) {
-                movielistFragment.SetList(movies);
+        if(savedInstanceState != null){
+            discoverMovies = savedInstanceState.getParcelableArrayList("discovermovies");
+            searchMovies = savedInstanceState.getParcelableArrayList("searchmovies");
+            isInDiscoverMode = (boolean)savedInstanceState.getSerializable("discovermode");
+            lastQuery = savedInstanceState.getString("lastquery");
+            isInWatchList = (boolean)savedInstanceState.getSerializable("isinwatchlist");
+            if(isInWatchList){
+                movielistFragment.SetList(WatchlistStorage.getList());
             }
-        });
+
+            else if(isInDiscoverMode){
+                movielistFragment.SetList(discoverMovies);
+            }
+            else{
+                movielistFragment.SetList(searchMovies);
+            }
+        }
+        else{
+            theMovieDB.Discover(this, page, new MovieListResponse() {
+                @Override
+                public void onResponse(ArrayList<Movie> movies) {
+                    discoverMovies = movies;
+                    movielistFragment.SetList(discoverMovies);
+                }
+            });
+        }
 
         final Activity activity = this;
 
@@ -91,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                     page+=1;
                     Log.i("page number", page+"");
 
-                    if(isInDiscoverMode){
+                    if(isInDiscoverMode && !isInWatchList){
                         theMovieDB.Discover(activity, page, new MovieListResponse() {
                             @Override
                             public void onResponse(ArrayList<Movie> movies) {
@@ -119,28 +140,31 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                 String watchlist = getResources().getString(R.string.watchlist);
                 String movielist = getResources().getString(R.string.movies);
 
-                if(title.equals(watchlist)){
+                if(title.equals(watchlist) && !isInWatchList){
                     findViewById(R.id.search).setVisibility(View.GONE);
+
+                    isInWatchList = true;
+
                     if(isInDiscoverMode){
                         discoverMovies = movielistFragment.getMovies();
                     }
                     else{
                         searchMovies = movielistFragment.getMovies();
                     }
-                    isInDiscoverMode = false;
+
                     movielistFragment.SetList(WatchlistStorage.getList());
 
                 }
-                else if(title.equals(movielist)){
-                    if(!lastQuery.equals("")){
-                        movielistFragment.SetList(searchMovies);
-                        isInDiscoverMode = false;
-                    }
-                    else{
-                        isInDiscoverMode = true;
+                else if(title.equals(movielist) && isInWatchList){
+                    isInWatchList = false;
+                    if(isInDiscoverMode){
                         movielistFragment.SetList(discoverMovies);
                     }
-                    findViewById(R.id.search).setVisibility(View.VISIBLE);
+                    else{
+                        movielistFragment.SetList(searchMovies);
+                    }
+
+                    invalidateOptionsMenu();
                 }
                 else {
                     return false;
@@ -159,6 +183,13 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         final Activity activity = this;
 
         SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
+
+        if(isInWatchList){
+            MenuItem item = menu.findItem(R.id.search);
+            item.setVisible(false);
+        }
+
+        searchView.setQuery(lastQuery, false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
@@ -172,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
                             isInDiscoverMode = false;
                         }
                         page = 1;
+                        searchMovies = movies;
                         movielistFragment.SetList(movies);
                     }
                 });
@@ -212,14 +244,6 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         String id = String.valueOf(movie.GetId());
         intent.putExtra(ID_MESSAGE, id);
         startActivity(intent);
-
-        //TODO Move to detail page addtowatchlist button
-//      watchlistStorage.addToWatchlist(movie, sharedPreferences);
-
-        //TODO Move to detail page saveposter button
-//        SavePoster savePoster = new SavePoster(this);
-//        Bitmap bimage = movie.GetBitMap();
-//        savePoster.SaveImage(bimage, movie.GetTitle());
     }
 
     @Override
@@ -242,5 +266,19 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         if(bottomNavigationView.getSelectedItemId() == R.id.navigation_schedule){
             movielistFragment.SetList(WatchlistStorage.getList());
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(discoverMovies != null){
+            outState.putParcelableArrayList("discovermovies", discoverMovies);
+            outState.putSerializable("discovermode", isInDiscoverMode);
+            outState.putSerializable("isinwatchlist", isInWatchList);
+            outState.putString("lastquery", lastQuery);
+            outState.putParcelableArrayList("searchmovies", searchMovies);
+        }
+
+        // call superclass to save any view hierarchy
+        super.onSaveInstanceState(outState);
     }
 }
