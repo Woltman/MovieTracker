@@ -194,6 +194,18 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.action_settings:
+                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+
+    @Override
     public void onItemSelected(Movie movie) {
         Intent intent = new Intent(this, DetailActivity.class);
 
