@@ -67,10 +67,12 @@ public class DetailActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.save_image : {
-                Toast.makeText(getApplicationContext(), "Image Saved", Toast.LENGTH_SHORT).show();
+
                 SavePoster savePoster = new SavePoster(this);
                 MovieDetailFragment movieDetailFragment = (MovieDetailFragment)getSupportFragmentManager().findFragmentById(R.id.moviedetailfragment);
+                Movie m = movieDetailFragment.getMovie();
                 savePoster.SaveImage(movieDetailFragment.getMovie().GetBitMap(), movieDetailFragment.getMovie().GetTitle());
+                Toast.makeText(getApplicationContext(), "Image Saved", Toast.LENGTH_SHORT).show();
                 return true;
             }
             default:
