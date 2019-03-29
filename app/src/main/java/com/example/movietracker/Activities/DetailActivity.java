@@ -2,6 +2,8 @@ package com.example.movietracker.Activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -11,8 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.movietracker.DownloadImageFromInternet;
 import com.example.movietracker.Fragments.MovieDetailFragment;
 import com.example.movietracker.R;
 import com.example.movietracker.SavePoster;
@@ -70,8 +74,10 @@ public class DetailActivity extends AppCompatActivity {
 
                 SavePoster savePoster = new SavePoster(this);
                 MovieDetailFragment movieDetailFragment = (MovieDetailFragment)getSupportFragmentManager().findFragmentById(R.id.moviedetailfragment);
-                Movie m = movieDetailFragment.getMovie();
-                savePoster.SaveImage(movieDetailFragment.getMovie().GetBitMap(), movieDetailFragment.getMovie().GetTitle());
+
+                ImageView iv = findViewById(R.id.movieposter);
+                Bitmap bm = ((BitmapDrawable)iv.getDrawable()).getBitmap();
+                savePoster.SaveImage(bm, movieDetailFragment.getMovie().GetTitle());
                 Toast.makeText(getApplicationContext(), "Image Saved", Toast.LENGTH_SHORT).show();
                 return true;
             }
