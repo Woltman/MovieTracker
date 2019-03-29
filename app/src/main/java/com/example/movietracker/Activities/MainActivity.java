@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import Core.IListItemSelected;
 import Core.Movie;
 import Core.MovieListResponse;
+import Infrastructure.Preferences;
 import Infrastructure.TheMovieDB;
 import Infrastructure.WatchlistStorage;
 
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         sharedPreferences = getSharedPreferences("shared prefernces", MODE_PRIVATE);
         movielistFragment = (MovieList) getSupportFragmentManager().findFragmentById(R.id.movielist);
 
+        Preferences.loadPreferences(sharedPreferences);
         WatchlistStorage.loadData(sharedPreferences);
         WatchlistStorage.observeList(this);
 
@@ -230,7 +232,8 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
         int id = item.getItemId();
         switch (id){
             case R.id.action_settings:
-                Toast.makeText(this, "settings", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, PreferenceActivity.class);
+                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);

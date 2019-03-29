@@ -20,4 +20,8 @@ public class Preference {
     public boolean GetValue(){
         return value;
     }
+
+    public String getSetting(){
+        return setting;
+    }
 }

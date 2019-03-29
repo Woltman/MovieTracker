@@ -14,22 +14,26 @@ import Core.Preference;
 
 public class Preferences {
 
-    private ArrayList<Preference> preferences = new ArrayList<Preference>();
+    private static ArrayList<Preference> preferences = new ArrayList<Preference>();
+    public static final String SHOWMOVIETITLES = "showMovieTitle";
 
     public Preferences() {
-        if (preferences.isEmpty()) {
-            preferences.add(new Preference("showMovieTitle", true));
-        }
+
     }
 
-    public void changePreference(Preference preference, boolean value) {
-        if (preferences.contains(preference)) {
-            int index = preferences.indexOf(preference);
-            preferences.get(index).SetValue(value);
+    public static void changePreference(Preference preference) {
+        for (Preference p: preferences) {
+            if(p.getSetting().equals(preference.getSetting())){
+                int index = preferences.indexOf(p);
+                preferences.get(index).SetValue(preference.GetValue());
+                return;
+            }
         }
+
+        preferences.add(preference);
     }
 
-    public void savePreference(SharedPreferences sharedPreferences) {
+    public static void savePreference(SharedPreferences sharedPreferences) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(preferences);
@@ -37,7 +41,7 @@ public class Preferences {
         editor.apply();
     }
 
-    public void loadPreferences(SharedPreferences sharedPreferences) {
+    public static void loadPreferences(SharedPreferences sharedPreferences) {
         Gson gson = new Gson();
         String json = sharedPreferences.getString("Preferences", null);
         Type type = new TypeToken<ArrayList<Preference>>() {}.getType();
@@ -45,6 +49,20 @@ public class Preferences {
 
         if (preferences == null) {
             preferences = new ArrayList<Preference>();
+            preferences.add(new Preference(SHOWMOVIETITLES, true));
         }
+    }
+
+    public static ArrayList<Preference> getPreferences(){
+        return preferences;
+    }
+
+    public static Preference getPreference(String setting){
+        for (Preference p: preferences) {
+            if(p.getSetting().equals(setting)){
+                return p;
+            }
+        }
+        return null;
     }
 }

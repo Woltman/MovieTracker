@@ -41,8 +41,6 @@ public class DetailActivity extends AppCompatActivity {
         registerForContextMenu(movieposter);
 
         setSupportActionBar((Toolbar)findViewById(R.id.my_toolbar));
-        //getSupportActionBar().setDisplayShowTitleEnabled(true);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the string

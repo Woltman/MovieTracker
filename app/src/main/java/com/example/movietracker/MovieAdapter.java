@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import Core.Movie;
+import Infrastructure.Preferences;
 
 public class MovieAdapter extends ArrayAdapter<Movie> {
     private ArrayList<Movie> _movies;
@@ -66,10 +67,15 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
             TextView tv = (TextView) v.findViewById(R.id.movie_title);
             ImageView iv = (ImageView) v.findViewById(R.id.movieposter);
 
+
+
             // check to see if each individual textview is null.
             // if not, assign some text!
-            if (tv != null){
+            if (tv != null && Preferences.getPreference(Preferences.SHOWMOVIETITLES).GetValue()){
                 tv.setText(movie.GetTitle());
+            }
+            else{
+                tv.setVisibility(View.GONE);
             }
             if (iv != null){
                 new DownloadImageFromInternet(iv, movie).execute(movie.GetImageUrl());
