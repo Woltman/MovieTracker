@@ -1,6 +1,7 @@
 package com.example.movietracker;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,13 @@ public class MovieAdapter extends ArrayAdapter<Movie> {
                 tv.setVisibility(View.GONE);
             }
             if (iv != null){
-                new DownloadImageFromInternet(iv, movie).execute(movie.GetImageUrl());
+                Bitmap bm = movie.GetBitMap();
+                if(bm != null){
+                    iv.setImageBitmap(movie.GetBitMap());
+                }
+                else {
+                    new DownloadImageFromInternet(iv, movie).execute(movie.GetImageUrl());
+                }
             }
         }
 

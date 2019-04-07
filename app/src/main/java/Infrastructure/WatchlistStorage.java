@@ -37,6 +37,11 @@ public class WatchlistStorage {
         Type type = new TypeToken<ArrayList<Movie>>() {}.getType();
         watchList = gson.fromJson(json, type);
 
+        for (Movie m: watchList
+             ) {
+            m.SetBitMap(null);
+        }
+
         if (watchList == null) {
             watchList = new ArrayList<Movie>();
         }

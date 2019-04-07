@@ -42,6 +42,7 @@ public class DownloadImageFromInternet extends AsyncTask<String, Void, Bitmap> {
 
     protected void onPostExecute(Bitmap result) {
         if(result == null) return;
+        movie.SetBitMap(result);
         imageView.setImageBitmap(result);
     }
 }

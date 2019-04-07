@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Movie implements Parcelable {
-    private static final String imageBaseUrl = "http://image.tmdb.org/t/p/w300";
+    private static final String imageBaseUrl = "https://image.tmdb.org/t/p/w300";
 
     private String _title;
     private int _id;
@@ -26,7 +26,7 @@ public class Movie implements Parcelable {
         _title = in.readString();
         _id = in.readInt();
         _imageUrl = in.readString();
-        poster = in.readParcelable(Bitmap.class.getClassLoader());
+       //poster = in.readParcelable(Bitmap.class.getClassLoader());
         _summmary = in.readString();
     }
 
@@ -88,7 +88,7 @@ public class Movie implements Parcelable {
         dest.writeString(_title);
         dest.writeInt(_id);
         dest.writeString(_imageUrl);
-        dest.writeParcelable(poster, flags);
+        //dest.writeParcelable(poster, flags);
         dest.writeString(_summmary);
     }
 }
