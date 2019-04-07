@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
     private ArrayList<Movie> discoverMovies = new ArrayList<>();
     private ArrayList<Movie> searchMovies = new ArrayList<>();
     private String lastQuery = "";
+    private long lastClickTime = 0;
 
     private SharedPreferences sharedPreferences;
 
@@ -240,9 +242,15 @@ public class MainActivity extends AppCompatActivity implements IListItemSelected
 
     }
 
+
     @Override
     public void onItemSelected(Movie movie) {
         Intent intent = new Intent(this, DetailActivity.class);
+
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+            return;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
 
         String id = String.valueOf(movie.GetId());
         intent.putExtra(ID_MESSAGE, id);
